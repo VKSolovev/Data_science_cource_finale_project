@@ -1,0 +1,40 @@
+```{r}
+library(tidyverse)
+library(patchwork)
+library(quantmod)
+library(quadprog)
+library(gganimate)
+library(ggpubr)
+library(PerformanceAnalytics)
+library(transformr)
+library(av)
+library(devtools)
+library(gifski)
+```
+Дальше вводим символ и создаем таблицу, с которой будем работать
+```{r}
+Your_Symbol <- "MMM"
+getSymbols(Your_Symbol)
+df <- MMM
+```
+Теперь строим графики с помощью ggplot2 с несколькими слоями и сводим их в одну табличку (2 балла)
+```{r}
+df <- to.monthly(df)
+date <- data.frame(Date = as.Date(index(df)))
+df1 <- cbind(date, df)
+val <- df1 %>% ggplot(aes(x = Date, y = df.Open))+geom_line() + geom_point()
+dif = diff(df$df.Open)
+dif1<- cbind(date, dif)
+dif <- dif1 %>% ggplot(aes(x = Date, y = df.Open)) +geom_line() + geom_point()
+```
+```{r}
+val/dif
+```
+Теперь построим анимацию для цены актива. Анимация будет находится в папке с файлом R.
+```{r}
+p <- df1 %>% ggplot(aes(x = Date, y = df.Open))+geom_line() + geom_point()+transition_reveal(Date)
+files = 
+png_files <- sprintf("gganim_plot00%X%X.png", 1:9, 1:9)
+gif_file <- gifski(png_files)
+```
+
